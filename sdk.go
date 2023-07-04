@@ -114,6 +114,7 @@ func (hk HKConfig) HttpPost(url string, body interface{}) (result gjson.Result, 
 		resg := gjson.Parse(ress)
 		result = resg.Get("data")
 		if hk.IsDebug {
+			fmt.Println("[debug] hik", url, "req:", string(bodyJson))
 			fmt.Println("[debug] hik", url, "resp:", ress)
 		}
 		if resg.Get("code").Str != "0" {
