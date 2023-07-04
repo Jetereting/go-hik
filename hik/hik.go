@@ -79,6 +79,14 @@ func UserAdd(name, code, cardNum, orgCode, faceData string) error {
 	return e
 }
 
+// UserDel 删除人员
+func UserDel(codes []string) error {
+	_, e := HIK.HttpPost("/api/resource/v1/person/batch/delete", map[string]interface{}{
+		"personIds": codes,
+	})
+	return e
+}
+
 // UserFaceUp 修改人员人脸
 func UserFaceUp(userCode, faceData string) error {
 	resp, e := HIK.HttpPost("/api/resource/v1/person/personId/personInfo", map[string]interface{}{
