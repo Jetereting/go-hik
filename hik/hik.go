@@ -127,6 +127,9 @@ func PermissionOrgAddDoor(orgCodes, doors []string) error {
 	if e != nil {
 		return e
 	}
+	if len(doors) == 0 {
+		return nil
+	}
 	// 添加权限配置
 	reqBody := map[string]interface{}{
 		"personDatas":   personMap,
