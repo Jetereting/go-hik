@@ -98,11 +98,12 @@ func UserFaceUp(userCode, faceData string) error {
 	if e != nil {
 		return e
 	}
-	if len(resp.Get("list").Array()) == 0 {
+	list := resp.Get("list").Array()
+	if len(list) == 0 {
 		return errors.New("未找到人员")
 	}
-	faceId := resp.Get("list").Array()[0].Get("personPhoto").Get("personPhotoIndexCode").Str
-	if faceId == "" {
+	personPhoto := list[0].Get("personPhoto").Array()
+	if len(personPhoto) == 0 {
 		//新增人脸
 		_, e = HIK.HttpPost("/api/resource/v1/face/single/add", map[string]interface{}{
 			"personId": userCode,
@@ -111,7 +112,7 @@ func UserFaceUp(userCode, faceData string) error {
 	} else {
 		//修改人脸
 		_, e = HIK.HttpPost("/api/resource/v1/face/single/update", map[string]interface{}{
-			"faceId":   faceId,
+			"faceId":   personPhoto[0].Get("personPhotoIndexCode").Str,
 			"faceData": faceData,
 		})
 	}
