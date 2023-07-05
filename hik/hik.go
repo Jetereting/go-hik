@@ -1,6 +1,7 @@
 package hik
 
 import (
+	"errors"
 	"github.com/Jetereting/go-hik"
 	"github.com/tidwall/gjson"
 )
@@ -89,13 +90,18 @@ func UserDel(codes []string) error {
 
 // UserFaceUp 修改人员人脸
 func UserFaceUp(userCode, faceData string) error {
-	resp, e := HIK.HttpPost("/api/resource/v1/person/personId/personInfo", map[string]interface{}{
-		"personId": userCode,
+	resp, e := HIK.HttpPost("/api/resource/v2/person/advance/personList", map[string]interface{}{
+		"pageNo":    1,
+		"pageSize":  1,
+		"personIds": userCode,
 	})
 	if e != nil {
 		return e
 	}
-	faceId := resp.Get("personPhoto").Get("serverIndexCode").Str
+	if len(resp.Get("list").Array()) == 0 {
+		return errors.New("未找到人员")
+	}
+	faceId := resp.Get("list").Array()[0].Get("personPhoto").Get("personPhotoIndexCode").Str
 	if faceId == "" {
 		//新增人脸
 		_, e = HIK.HttpPost("/api/resource/v1/face/single/add", map[string]interface{}{
